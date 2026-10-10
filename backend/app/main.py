@@ -1,5 +1,7 @@
 import os
 import math
+import re
+from ipaddress import ip_address
 from typing import Literal
 
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
@@ -21,6 +23,55 @@ MULTIPART_OVERHEAD_BYTES = 64 * 1024
 
 if MAX_BATCH_UPLOAD_BYTES <= 0 or MAX_BATCH_ROWS <= 0:
     raise RuntimeError("Batch upload byte and row limits must be positive integers.")
+
+
+DEVELOPMENT_CORS_ORIGINS = (
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+)
+
+
+def parse_cors_origins(value: str) -> list[str]:
+    """Accept exact HTTP(S) origins only; invalid configuration fails startup."""
+    origins = list(DEVELOPMENT_CORS_ORIGINS)
+    for entry in value.split(","):
+        origin = entry.strip()
+        if not origin:
+            continue
+        match = re.fullmatch(
+            r"https?://(?P<host>\[[0-9A-Fa-f:.]+\]|[A-Za-z0-9.-]+)(?::(?P<port>[0-9]{1,5}))?",
+            origin,
+        )
+        valid = match is not None
+        if match:
+            host, port = match.group("host", "port")
+            if port is not None and not 1 <= int(port) <= 65535:
+                valid = False
+            if host.startswith("[") or re.fullmatch(r"[0-9.]+", host):
+                try:
+                    address = ip_address(host.strip("[]"))
+                    if host.startswith("[") and address.version != 6:
+                        valid = False
+                except ValueError:
+                    valid = False
+            else:
+                valid = valid and len(host) <= 253 and all(
+                    re.fullmatch(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?", label)
+                    for label in host.split(".")
+                )
+        if not valid:
+            # Do not echo potentially sensitive configuration into startup logs.
+            raise RuntimeError(
+                "Invalid SECUREPAY_CORS_ORIGINS entry: use exact http:// or https:// origins "
+                "with a valid host and optional port, without wildcards, credentials, "
+                "paths, trailing slashes, queries, or fragments."
+            )
+        if origin not in origins:
+            origins.append(origin)
+    return origins
+
+
+CORS_ORIGINS = parse_cors_origins(os.getenv("SECUREPAY_CORS_ORIGINS", ""))
 
 
 class BatchUploadSizeLimitMiddleware:
@@ -97,10 +148,7 @@ app.add_middleware(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=False,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],

@@ -152,6 +152,18 @@ Open http://127.0.0.1:5173. The client defaults to http://127.0.0.1:8000. To ove
 
 Backend CORS permits http://localhost:5173 and http://127.0.0.1:5173. Changing the browser origin or using the default preview port does not automatically update that allowlist. See the [frontend guide](frontend/README.md) for workflows and checks.
 
+### Configure CORS for a deployed frontend
+
+Both development origins, http://localhost:5173 and http://127.0.0.1:5173, remain allowed. Add production origins through the backend environment variable **SECUREPAY_CORS_ORIGINS**. On Render, set:
+
+~~~dotenv
+SECUREPAY_CORS_ORIGINS=https://securepay-demo.vercel.app
+~~~
+
+The URL above is an example placeholder: **replace it with your actual deployed frontend origin**. For multiple origins, separate them with commas, for example https://securepay-demo.vercel.app,https://your-custom-domain.example. Use only the scheme, hostname, and optional port, with no trailing slash or path. Restart/redeploy the backend after changing the variable.
+
+Whitespace around entries is trimmed, empty entries are ignored, and duplicate entries are removed. Invalid entries fail backend startup instead of being silently accepted. Do not use wildcard origins, including * or https://*.vercel.app; preview deployments must be explicitly listed. Credentials remain disabled. CORS controls browser access and is not authentication or protection against non-browser clients.
+
 ## FastAPI endpoints
 
 | Method | Path | Purpose |
