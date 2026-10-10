@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --canvas: 7 21 33;
+  --panel: 11 27 40;
+  --field: 8 23 34;
+  --sidebar: 9 24 36;
+  --table: 13 32 45;
+  --ink: 241 245 249;
+  --body: 203 213 225;
+  --muted: 162 179 199;
+  --success: 153 246 228;
+  --warning: 253 230 138;
+  --info: 186 230 253;
+  --danger: 254 205 211;
+  --line: 255 255 255;
+  --wash: 255 255 255;
+  --control: 110 129 148;
+  --focus: #80e0d2;
+  --chart-teal: #70d5be;
+  --chart-sky: #7dd3fc;
+  --chart-amber: #f4bc68;
+  font-family: 'DM Sans', sans-serif;
+  color: rgb(var(--body));
+  background: rgb(var(--canvas));
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --canvas: 241 245 249;
+  --panel: 255 255 255;
+  --field: 248 250 252;
+  --sidebar: 248 250 252;
+  --table: 226 232 240;
+  --ink: 15 23 42;
+  --body: 51 65 85;
+  --muted: 71 85 105;
+  --success: 17 94 89;
+  --warning: 120 53 15;
+  --info: 7 89 133;
+  --danger: 159 18 57;
+  --line: 15 23 42;
+  --wash: 15 23 42;
+  --control: 100 116 139;
+  --focus: #0f766e;
+  --chart-teal: #0f766e;
+  --chart-sky: #0369a1;
+  --chart-amber: #92400e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  background-color: rgb(var(--canvas));
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background-color: rgb(var(--canvas));
+  background-image:
+    linear-gradient(rgba(120, 164, 183, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 164, 183, 0.025) 1px, transparent 1px),
+    linear-gradient(150deg, rgb(var(--sidebar)) 0%, rgb(var(--canvas)) 55%, rgb(var(--panel)) 100%);
+  background-size: 40px 40px, 40px 40px, cover;
+}
+
+button {
+  font: inherit;
+}
+
+::selection {
+  color: #071521;
+  background: #80e0d2;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus) !important;
+  outline-offset: 3px;
+}
+
+.font-display {
+  font-family: 'Space Grotesk', 'DM Sans', sans-serif;
+}
+
+.shadow-panel {
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+}
+
+/* Inputs retain a visible boundary; focus applies even to legacy outline-none controls. */
+input:not([type='checkbox']):not([type='radio']), select {
+  border-color: rgb(var(--control));
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,33 @@
+# Python environment and generated files
+.venv/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local environment configuration
+.env
+.env.*
+!.env.example
+
+# Frontend dependencies and build output
+frontend/node_modules/
+frontend/dist/
+
+# Logs and operating system files
+*.log
+.DS_Store
+Thumbs.db
+
+# Local dataset (saved inference artifacts in models/ remain tracked)
+/Data/creditcard.csv
+
+# Unused root npm lockfile; keep frontend/package-lock.json
+/package-lock.json
+
+# Notebook checkpoints and additional generated analysis caches
+.ipynb_checkpoints/
+.mypy_cache/
+.ruff_cache/
+.coverage.*
